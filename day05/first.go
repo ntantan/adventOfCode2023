@@ -7,8 +7,7 @@ import (
 	"strings"
 )
 
-func translate(seed string, _map []string) int {
-	s, _ := strconv.Atoi(seed)
+func translate(seed int, _map []string) int {
 	for _, line := range _map {
 		split := strings.Split(line, " ")
 		destination, _ := strconv.Atoi(split[0])
@@ -16,18 +15,18 @@ func translate(seed string, _map []string) int {
 		ranje, _ := strconv.Atoi(split[2])
 		end := start + ranje - 1
 
-		if s >= start && s <= end {
-			fmt.Printf("%q %q [seed]%d [destination]%d [start]%d [ranje]%d [end]%d\n", line, split, s, destination, start, ranje, end)
-			s = destination + (s - start)
+		if seed >= start && seed <= end {
+			// fmt.Printf("%q %q [seed]%d [destination]%d [start]%d [ranje]%d [end]%d\n", line, split, seed, destination, start, ranje, end)
+			seed = destination + (seed - start)
 			break
 		}
 	}
 
-	return s
+	return seed
 }
 
 func fileToString() string {
-	file, err := os.ReadFile("example.txt")
+	file, err := os.ReadFile("input.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -40,21 +39,30 @@ func main() {
 
 	seeds := strings.Split(split[0], " ")
 	fmt.Printf("[seeds]: %q\n", seeds)
-	seeds_to_soil := strings.Split(split[1], "\n")
-	fmt.Printf("%q\n", seeds_to_soil)
-	soil_to_fertalizer := strings.Split(split[2], "\n")
-	fmt.Printf("%q\n", soil_to_fertalizer)
-	fertilizer_to_water := strings.Split(split[3], "\n")
-	fmt.Printf("%q\n", fertilizer_to_water)
-	water_to_light := strings.Split(split[4], "\n")
-	fmt.Printf("%q\n", water_to_light)
-	temperature_to_humidity := strings.Split(split[5], "\n")
-	fmt.Printf("%q\n", temperature_to_humidity)
-	humidity_to_location := strings.Split(split[6], "\n")
-	fmt.Printf("%q\n", humidity_to_location)
-
+	// seeds_to_soil := strings.Split(split[1], "\n")
+	// fmt.Printf("%q\n", seeds_to_soil)
+	// soil_to_fertalizer := strings.Split(split[2], "\n")
+	// fmt.Printf("%q\n", soil_to_fertalizer)
+	// fertilizer_to_water := strings.Split(split[3], "\n")
+	// fmt.Printf("%q\n", fertilizer_to_water)
+	// water_to_light := strings.Split(split[4], "\n")
+	// fmt.Printf("%q\n", water_to_light)
+	// temperature_to_humidity := strings.Split(split[5], "\n")
+	// fmt.Printf("%q\n", temperature_to_humidity)
+	// humidity_to_location := strings.Split(split[6], "\n")
+	// fmt.Printf("%q\n", humidity_to_location)
 	// fmt.Printf("%d\n", translate(seeds[0], seeds_to_soil))
-	for i := 1; i < 6; i++ {
-		fmt.Printf("%d\n", translate(seeds[0], strings.Split(split[i], "\n")))
+
+	min := 0
+	for j := 0; j < len(seeds); j++ {
+		temp, _ := strconv.Atoi(seeds[j])
+		for i := 1; i < 8; i++ {
+			temp = translate(temp, strings.Split(split[i], "\n"))
+		}
+		if min == 0 || temp < min {
+			min = temp
+		}
+		// fmt.Printf("%d\n", temp)
 	}
+	fmt.Printf("%d\n", min)
 }
