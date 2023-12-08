@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"slices"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -32,29 +33,38 @@ func fileToString() string {
 
 func findHandType(hand string) string {
 	if hand == "JJJJJ" {
-		return "8"
+		return "7"
 	}
 
-	tab := make([]int, 6)
-	jCount := strings.Count(hand, "J")
-	for _, char := range hand {
-		if char != 'J' {
-			tab[strings.Count(hand, string(char))+jCount] += 1
+	memory := make([]byte, 0)
+	tab := make([]int, 0)
+
+	for i := 0; i < 5; i++ {
+		if hand[i] != 'J' && !slices.Contains(memory, hand[i]) {
+			count := strings.Count(hand, string(hand[i]))
+			// tab[i] = count
+			tab = append(tab, count)
+			memory = append(memory, hand[i])
 		}
 	}
 
-	fmt.Printf("%d\n", tab)
-	if tab[5] > 0 {
+	sort.Sort(sort.Reverse(sort.IntSlice(tab)))
+
+	jCount := strings.Count(hand, "J")
+	tab[0] += jCount
+	fmt.Printf("sort %d\n", tab)
+
+	if tab[0] == 5 {
 		return "7" // return "Five"
-	} else if tab[4] > 0 {
+	} else if tab[0] == 4 {
 		return "6" // return "Four"
-	} else if tab[3] > 0 && tab[2] > 0 {
+	} else if tab[0] == 3 && tab[1] == 2 {
 		return "5" // return "FullHouse"
-	} else if tab[3] > 0 {
+	} else if tab[0] == 3 {
 		return "4" // return "Three"
-	} else if tab[2] > 2 {
+	} else if tab[0] == 2 && tab[1] == 2 {
 		return "3" // return "TwoPair"
-	} else if tab[2] > 0 {
+	} else if tab[0] == 2 {
 		return "2" // return "Pair"
 	} else {
 		return "1" // return "HighCards"
