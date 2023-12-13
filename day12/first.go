@@ -23,10 +23,25 @@ func main() {
 			records = append(records, atoi)
 		}
 
-		// count springs
-		springsCount := 0
+		totalSprings := 0
 		for _, record := range records {
-			springsCount += record
+			totalSprings += record
+		}
+
+		knownSprings := 0
+		for _, char := range scheme {
+			if char == '#' {
+				knownSprings += 1
+			}
+		}
+
+		unknownSprings := totalSprings - knownSprings
+
+		unknownPos := make([]int, 0)
+		for i, char := range scheme {
+			if char == '?' {
+				unknownPos = append(unknownPos, i)
+			}
 		}
 
 	}(lines[0])
